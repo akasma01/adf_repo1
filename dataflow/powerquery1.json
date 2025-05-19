@@ -1,0 +1,20 @@
+{
+	"name": "powerquery1",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "input_emp",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> input_emp",
+					"dataset": {
+						"referenceName": "input_emp",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"script": "section Section1;\r\nshared input_emp = let AdfDoc = AzureStorage.DataLakeContents(\"https://adfsma.dfs.core.windows.net/adf/input/newEmp.csv\"),Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]), PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true]) in  PromotedHeaders;\r\nshared UserQuery = let Source = #\"input_emp\",\r\n  #\"Replaced value\" = Table.ReplaceValue(Source, \"\", \"india\", Replacer.ReplaceValue, {\"country\"}) in #\"Replaced value\";\r\n",
+			"documentLocale": "en-us"
+		}
+	}
+}
